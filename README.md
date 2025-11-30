@@ -79,9 +79,12 @@ OPCUA_ROUTER/
 │   ├── test_opcua_router.py      # API End point tests
 │   ├── test_opcua_driver.py      # OPC-UA driver tests
 │   └── conftest.py               # Pytest fixtures and configuration
+├── external/
+│   └── opcua_test_server/        # OPC-UA test server (submodule)
 ├── .env                          # Environment variables
 ├── diagram.png                   # Architecture diagram
 ├── main.py                       # Application entry point
+├── models.py                     # Pydantic models
 ├── requirements.txt              # Python dependencies
 └── README.md
 ```
@@ -100,8 +103,15 @@ OPCUA_ROUTER/
 ### **1. Clone the Repository**
 
 ```bash
-git clone https://github.com/nithinkurian1988/redi_final_project
-cd redi_final_project/IT-Software/opcua_router
+git clone --recurse-submodules https://github.com/nithinkurian1988/opcua_router
+cd opcua_router
+```
+
+**Note**: The `--recurse-submodules` flag ensures the OPC-UA test server submodule is cloned automatically.
+
+If you've already cloned without submodules, initialize them with:
+```bash
+git submodule update --init --recursive
 ```
 
 ### **2. Set Up Virtual Environment**
@@ -155,13 +165,13 @@ You have two options:
 
 #### **Option 1: Use the Test OPC-UA Server (Recommended for Quick Start)**
 
-This project includes a test OPC-UA server for development and testing purposes.
+This project includes a test OPC-UA server as a Git submodule for development and testing purposes.
 
 **Installation:**
 
 ```bash
 # Navigate to the test server directory
-cd redi_final_project/OT-Software/opcua_server
+cd external/opcua_test_server
 
 # Create virtual environment
 python3 -m venv venv
@@ -380,3 +390,5 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000,https://yourapp.com
 - Cloud deployment and hosting
 - Multi-library OPC-UA client support (selectable via frontend or environment variable)
 - Grafana dashboard templates and monitoring
+
+
