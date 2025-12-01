@@ -19,6 +19,8 @@ import asyncio
 import sys
 
 ROUTER_MODULE_PATH = "api.endpoints.opcua_router"
+DEFAULT_TEST_DB_URL = "postgresql://postgres:Nkk%400475@127.0.0.1:5432/postgres"
+TEST_DB_URL = "postgresql://postgres:Nkk%400475@127.0.0.1:5432/opc_test_db"
 
 # ---------- Windows event loop fix ----------
 if sys.platform.startswith("win"):
@@ -33,7 +35,7 @@ def app() -> FastAPI:
 def setup_test_database():
     """Create test database if it doesn't exist and create tables"""
     # Connect to default postgres database
-    default_db_url = "postgresql://postgres:Nkk%400475@127.0.0.1:5432/postgres"
+    default_db_url = DEFAULT_TEST_DB_URL
     default_engine = create_engine(default_db_url, isolation_level="AUTOCOMMIT")
     
     try:
@@ -50,7 +52,7 @@ def setup_test_database():
         default_engine.dispose()
     
     # Connect to the test database and create tables
-    test_db_url = "postgresql://postgres:Nkk%400475@127.0.0.1:5432/opc_test_db"
+    test_db_url = TEST_DB_URL
     test_engine = create_engine(test_db_url)
     
     try:
@@ -96,37 +98,38 @@ def client(app: FastAPI) -> Generator[TestClient, None, None]:
     yield client
     app.dependency_overrides.clear()
 
-# @fixture(scope="function")
-# def mock_opcua_driver() -> Generator[MagicMock, None, None]:
-#     '''Provides a mock for the opcua_driver module with configured behaviors'''
-#     with patch(f"{ROUTER_MODULE_PATH}.opc_read") as mock_read, \
-#          patch(f"{ROUTER_MODULE_PATH}.opc_write") as mock_write:
-        
-#         # Configure how the fake OPC read behaves
-#         # Configure how the fake OPC read behaves
-#         # Create a shared variable to store the written value
-#         written_value = {"value": 25.5}  # default value
-        
-#         def mock_read_side_effect(*args, **kwargs):
-#             return {
-#             "status": "Success",
-#             "value": written_value["value"],
-#             "message": "Value read successfully",
-#             "error": None,
-#             }
-        
-#         def mock_write_side_effect(node_id, value, *args, **kwargs):
-#             written_value["value"] = value
-#             return True
-        
-#         mock_read.side_effect = mock_read_side_effect
-#         mock_write.side_effect = mock_write_side_effect
+@fixture(scope="function")
+def mock_opcua_router_functions(monkeypatch):
+    """
+    Patches opc_read / opc_write in the router module.
+    Used by tests in test_opcua_router.py
+    """
+    import importlib
 
-#         # Yield both mocks if you want to inspect them in tests
-#         yield {
-#             "opc_read": mock_read,
-#             "opc_write": mock_write,
-#         }
+    router_module = importlib.import_module(ROUTER_MODULE_PATH)
+
+    # Create a shared state dictionary to store values
+    mock_state = {}
+    
+    def mock_read_func(node_id: str):
+        """Mock read that returns the value set by mock_write"""
+        return mock_state.get(node_id, 0.0)  # Default value if not set
+    
+    def mock_write_func(node_id: str, value):
+        """Mock write that stores the value for mock_read"""
+        mock_state[node_id] = value
+        return True
+    
+    mock_read = MagicMock(side_effect=mock_read_func)
+    mock_write = MagicMock(side_effect=mock_write_func)
+
+    monkeypatch.setattr(router_module, "opc_read", mock_read)
+    monkeypatch.setattr(router_module, "opc_write", mock_write)
+
+    yield {
+        "opc_read": mock_read,
+        "opc_write": mock_write,
+    }
 
 @fixture(scope="function")
 def mock_opcua_driver():

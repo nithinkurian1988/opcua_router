@@ -2,17 +2,17 @@
 import pytest
 from starlette.status import HTTP_200_OK
 from services import opcua_driver
+from db.models import OPCUANode
+from datetime import datetime, timezone
 
 TEST_API_KEY_NAME="API-KEY"
 TEST_API_KEY="1234567890abcdef"
 
-pytestmark = pytest.mark.usefixtures("mock_opcua_driver")
+pytestmark = pytest.mark.usefixtures("mock_opcua_router_functions")
 
-def test_read_node_success(client, db_session, mock_opcua_driver):
+def test_read_node_success(client, db_session, mock_opcua_router_functions):
     """Test reading a node that exists in the database"""
     # Pre-insert a node into the test database
-    from db.models import OPCUANode
-    from datetime import datetime, timezone
     test_node = OPCUANode(node_id=1, value=25.5, timestamp=datetime.now(timezone.utc))
     db_session.add(test_node)
     db_session.commit()
