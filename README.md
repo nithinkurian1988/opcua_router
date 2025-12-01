@@ -226,14 +226,15 @@ uvicorn main:create_app --reload --host 0.0.0.0 --port 8000
 ### **Run Tests**
 
 ```bash
+cd opcua_router
 # Run all tests
 pytest
 
 # Run with coverage
-pytest --cov=. --cov-report=html
+pytest --cov=. --cov-report=html:tests/coverage
 
 # View coverage report
-open tests/coverage/index.html
+tests/coverage/index.html
 ```
 
 ---
