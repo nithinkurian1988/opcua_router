@@ -58,9 +58,12 @@ async def delete_node(model, record_id):
     async with get_session() as session:
         result = await session.execute(select(model))
         record = result.scalars().all()
+        count = 0
         for rec in record:
             if rec.node_id == record_id:
+                count = count + 1
                 await session.delete(rec)
                 await session.commit()
-        return True
-    return False
+        if count > 0:
+            return True
+        return False

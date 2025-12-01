@@ -42,9 +42,3 @@ class DeleteResponse(BaseModel):
     status: str
     message: str
     error: str | None = None
-
-
-class ErrorResponse(BaseModel):
-    status: str
-    message: str
-    error: str | None = None

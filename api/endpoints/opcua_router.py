@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, Body
 import db.db_actions as db_actions
 from models import ReadAllResponse, ReadResponse
-from models import WriteRequest, WriteResponse, ErrorResponse, DeleteResponse
+from models import WriteRequest, WriteResponse, DeleteResponse
 from services.opcua_driver import opc_read, opc_write
 from db.models import OPCUANode
 from core.security import get_api_key
+from fastapi import HTTPException
+from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 
 router = APIRouter()
 
@@ -36,10 +38,13 @@ async def read_node(node_id: str, api_key: str = Depends(get_api_key)):
             # Save the new node to the database
             record = await db_actions.insert_node(node_id, value)
         else:
-            return ErrorResponse(
-                status="Failed",
-                message="Node not found in database or OPC UA server",
-                error=opc_response["error"]
+            raise HTTPException(
+                status_code=HTTP_404_NOT_FOUND,
+                detail={
+                    "status": "Failed",
+                    "message": "Node not found in database or OPC UA server",
+                    "error": opc_response["error"]
+                }
             )
     return ReadResponse(
         status="Success",
@@ -64,10 +69,13 @@ async def write_node(request: WriteRequest = Body(...), api_key: str = Depends(g
             error=None
         )
     else:
-        return ErrorResponse(
-            status="Failed",
-            message="Error writing to OPC UA server",
-            error=opc_response["error"]
+        raise HTTPException(
+            status_code=HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+            "status": "Failed",
+            "message": "Error writing to OPC UA server",
+            "error": opc_response["error"]
+            }
         )
 
 @router.put("/update/{node_id}")
@@ -91,10 +99,13 @@ async def update_node(node_id: str, api_key: str = Depends(get_api_key)):
                 error=None
             )
     else:
-        return ErrorResponse(
-            status="Failed",
-            message="Error reading from OPC UA server",
-            error=opc_response["error"]
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail={
+                "status": "Failed",
+                "message": "Error reading from OPC UA server",
+                "error": opc_response["error"]
+            }
         )
 
 @router.delete("/delete/{node_id}")
@@ -111,8 +122,11 @@ async def delete_node(node_id: str, api_key: str = Depends(get_api_key)):
             error=None
         )
     else:
-        return ErrorResponse(
-            status="Failed",
-            message="Node not found",
-            error="NotFoundError"
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail={
+                "status": "Failed",
+                "message": "Node not found in database",
+                "error": "DeleteError"
+            }
         )

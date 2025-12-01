@@ -27,14 +27,16 @@ async def opc_write(node_id, value):
             else:
                 return {
                     "status": "Failed",
-                    "message": "Value written but confirmation failed",
-                    "error": "ConfirmationError",
+                    "error": "OPCWriteError",
                 }
     except Exception as e:
         logger.error(f"Error writing OPC data: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
     finally:
         logger.info("Disconnected from OPC UA server")
+        return {
+            "status": "Failed",
+            "error": "OPCWriteError",
+        }
 
 
 async def opc_read(nodeid):
@@ -56,6 +58,9 @@ async def opc_read(nodeid):
             }
     except Exception as e:
         logger.error(f"Error reading OPC data: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
     finally:
         logger.info("Disconnected from OPC UA server")
+        return {
+            "status": "Failed",
+            "error": "OPCReadError",
+        }
