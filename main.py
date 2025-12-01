@@ -8,6 +8,7 @@ import uvicorn
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    '''Lifespan context manager to handle startup and shutdown events.'''
     await init_models()
     yield
 

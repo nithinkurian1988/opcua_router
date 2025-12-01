@@ -4,15 +4,9 @@ from models import ReadAllResponse, ReadResponse
 from models import WriteRequest, WriteResponse, ErrorResponse, DeleteResponse
 from services.opcua_driver import opc_read, opc_write
 from db.models import OPCUANode
-from db.db_actions import init_models
 from core.security import get_api_key
 
 router = APIRouter()
-
-# Initialize database models on router startup
-@router.on_event("startup")
-async def startup_event():
-    await init_models()
 
 @router.get("/read")
 async def read_all_nodes(api_key: str = Depends(get_api_key)):
