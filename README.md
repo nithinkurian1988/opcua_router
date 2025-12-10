@@ -378,6 +378,14 @@ Restrict frontend origins:
 ```env
 CORS_ALLOWED_ORIGINS=http://localhost:3000,https://yourapp.com
 ```
+## 🧪 **Testing**
+#### **Postman Collection**
+
+Import the pre-built Postman collection for testing all endpoints:
+
+[📥 Postman Collection](https://nithinkurian1988-2214416.postman.co/workspace/Nithin-K-Kurian's-Workspace~d0409efb-27f8-4428-889d-a3e9a3cb7b16/collection/48886549-a6dd8e74-da5a-4bbb-869a-21d79e455047?action=share&source=copy-link&creator=48886549)
+
+This collection includes pre-configured requests for all API endpoints with example payloads and headers.
 
 ## ⭐ **Future Improvements**
 

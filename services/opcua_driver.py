@@ -31,12 +31,12 @@ async def opc_write(node_id, value):
                 }
     except Exception as e:
         logger.error(f"Error writing OPC data: {e}")
-    finally:
-        logger.info("Disconnected from OPC UA server")
         return {
             "status": "Failed",
-            "error": "OPCWriteError",
+            "error": "OPCWriteException",
         }
+    finally:
+        logger.info("Disconnected from OPC UA server")
 
 
 async def opc_read(nodeid):
@@ -58,9 +58,9 @@ async def opc_read(nodeid):
             }
     except Exception as e:
         logger.error(f"Error reading OPC data: {e}")
-    finally:
-        logger.info("Disconnected from OPC UA server")
         return {
             "status": "Failed",
-            "error": "OPCReadError",
+            "error": "OPCReadException",
         }
+    finally:
+        logger.info("Disconnected from OPC UA server")
