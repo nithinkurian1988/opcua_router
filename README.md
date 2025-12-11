@@ -65,27 +65,28 @@ The router acts as a middleware layer:
 OPCUA_ROUTER/
 ├── api/
 │   └── endpoints/
-│       └── opcua_router.py       # REST endpoint definitions
+│       └── opcua_router.py         # REST endpoint definitions
 ├── core/
-│   ├── config.py                 # Application settings
-│   └── security.py               # Authentication logic
+│   ├── config.py                   # Application settings
+│   └── security.py                 # Authentication logic
 ├── db/
-│   ├── db_actions.py             # Database operations
-│   └── models.py                 # SQLAlchemy models
+│   ├── db_actions.py               # Database operations
+│   └── models.py                   # SQLAlchemy models
 ├── services/
-│   └── opcua_driver.py           # OPC-UA client logic
+│   └── opcua_driver.py             # OPC-UA client logic
 ├── tests/
-│   ├── coverage/                 # Test coverage reports
-│   ├── test_opcua_router.py      # API End point tests
-│   ├── test_opcua_driver.py      # OPC-UA driver tests
-│   └── conftest.py               # Pytest fixtures and configuration
+│   ├── coverage/                   # Test coverage reports
+│   ├── test_opcua_router.py        # API End point tests
+│   ├── test_opcua_driver.py        # OPC-UA driver tests
+│   └── conftest.py                 # Pytest fixtures and configuration
 ├── external/
-│   └── opcua_test_server/        # OPC-UA test server (submodule)
-├── .env                          # Environment variables
-├── diagram.png                   # Architecture diagram
-├── main.py                       # Application entry point
-├── models.py                     # Pydantic models
-├── requirements.txt              # Python dependencies
+│   ├── opcua_router_frontend_dash/ # OPC-UA Router Frontend  
+│   └── opcua_test_server/          # OPC-UA test server (submodule) 
+├── .env                            # Environment variables
+├── diagram.png                     # Architecture diagram
+├── main.py                         # Application entry point
+├── models.py                       # Pydantic models
+├── requirements.txt                # Python dependencies
 └── README.md
 ```
 
@@ -104,6 +105,7 @@ OPCUA_ROUTER/
 
 ```bash
 git clone --recurse-submodules https://github.com/nithinkurian1988/opcua_router
+git clone --recurse-submodules https://github.com/nithinkurian1988/opcua_router_frontend_dash
 cd opcua_router
 ```
 
