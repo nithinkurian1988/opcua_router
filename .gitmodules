@@ -4,3 +4,6 @@
 [submodule "external/opcua_test_server"]
 	path = external/opcua_test_server
 	url = https://github.com/nithinkurian1988/opcua_test_server
+[submodule "external/opcua_router_frontend_dash"]
+	path = external/opcua_router_frontend_dash
+	url = https://github.com/nithinkurian1988/opcua_router_frontend_dash
